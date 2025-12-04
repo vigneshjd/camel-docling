@@ -1,0 +1,36 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+*.iml
+*.ipr
+*.iws
+bin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application
+data/input/*
+data/output/*
+data/failed/*
+!data/input/.gitkeep
+!data/output/.gitkeep
+!data/failed/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+*.env

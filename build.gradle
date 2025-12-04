@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.example'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repository.apache.org/content/repositories/snapshots"
+    }
+}
+
+ext {
+    camelVersion = '4.9.0'
+    langchain4jVersion = '0.35.0'
+    slf4jVersion = '2.0.9'
+}
+
+dependencies {
+    // Apache Camel Core
+    implementation "org.apache.camel:camel-core:${camelVersion}"
+    implementation "org.apache.camel:camel-main:${camelVersion}"
+    
+    // Camel Docling Component for document parsing
+    implementation "org.apache.camel:camel-docling:${camelVersion}"
+    
+    // Camel LangChain4j for AI/LLM integration
+    implementation "org.apache.camel:camel-langchain4j-chat:${camelVersion}"
+    implementation "org.apache.camel:camel-langchain4j-embeddings:${camelVersion}"
+    
+    // LangChain4j dependencies
+    implementation "dev.langchain4j:langchain4j:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-embeddings:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-open-ai:${langchain4jVersion}"
+    
+    // Vector Store - In-Memory for simplicity
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2-q:${langchain4jVersion}"
+    
+    // JSON processing
+    implementation "org.apache.camel:camel-jackson:${camelVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.15.3"
+    
+    // HTTP component for REST endpoints
+    implementation "org.apache.camel:camel-http:${camelVersion}"
+    implementation "org.apache.camel:camel-jetty:${camelVersion}"
+    
+    // File component
+    implementation "org.apache.camel:camel-file:${camelVersion}"
+    
+    // Direct and Bean components
+    implementation "org.apache.camel:camel-direct:${camelVersion}"
+    implementation "org.apache.camel:camel-bean:${camelVersion}"
+    
+    // Logging
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    
+    // Testing
+    testImplementation "org.apache.camel:camel-test-junit5:${camelVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.9.3"
+}
+
+application {
+    mainClass = 'com.example.docling.rag.DoclingRagApplication'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
