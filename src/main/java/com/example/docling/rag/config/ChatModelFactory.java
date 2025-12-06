@@ -1,9 +1,14 @@
 package com.example.docling.rag.config;
 
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.output.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Configuration factory for LangChain4j chat models.
@@ -41,11 +46,14 @@ public class ChatModelFactory {
     private static ChatLanguageModel createMockChatModel() {
         return new ChatLanguageModel() {
             @Override
-            public String generate(String message) {
-                LOG.info("Mock chat model received message: {}", message);
-                return "This is a mock response. The actual query was processed, but no OpenAI API key is configured. " +
+            public Response<AiMessage> generate(List<ChatMessage> messages) {
+                String userMessage = messages.isEmpty() ? "" : 
+                    messages.get(messages.size() - 1).toString();
+                LOG.info("Mock chat model received message: {}", userMessage);
+                String responseText = "This is a mock response. The actual query was processed, but no OpenAI API key is configured. " +
                        "To get real AI responses, please set the OPENAI_API_KEY environment variable with your OpenAI API key. " +
                        "\n\nYour query and the retrieved context have been processed successfully by the RAG system.";
+                return Response.from(AiMessage.from(responseText));
             }
         };
     }

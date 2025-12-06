@@ -28,6 +28,7 @@ public class VectorStoreService {
     
     private final EmbeddingStore<TextSegment> embeddingStore;
     private final EmbeddingModel embeddingModel;
+    private int storedEmbeddingsCount = 0;
     
     public VectorStoreService() {
         this.embeddingStore = new InMemoryEmbeddingStore<>();
@@ -58,6 +59,7 @@ public class VectorStoreService {
         for (TextSegment segment : segments) {
             Embedding embedding = embeddingModel.embed(segment).content();
             embeddingStore.add(embedding, segment);
+            storedEmbeddingsCount++;
         }
         
         LOG.info("Successfully ingested {} chunks from document: {}", chunks.size(), documentName);
@@ -73,7 +75,13 @@ public class VectorStoreService {
         Embedding queryEmbedding = embeddingModel.embed(query).content();
         
         // Search for similar embeddings
-        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(queryEmbedding, maxResults);
+        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.search(
+            dev.langchain4j.store.embedding.EmbeddingSearchRequest.builder()
+                .queryEmbedding(queryEmbedding)
+                .maxResults(maxResults)
+                .minScore(0.0)
+                .build()
+        ).matches();
         
         // Extract text from matched segments
         List<String> relevantChunks = matches.stream()
@@ -122,6 +130,6 @@ public class VectorStoreService {
      * Get the current number of stored embeddings.
      */
     public int getStoredEmbeddingsCount() {
-        return embeddingStore.getAll().size();
+        return storedEmbeddingsCount;
     }
 }
