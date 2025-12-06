@@ -5,7 +5,7 @@ import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
+import dev.langchain4j.model.output.Response;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -32,7 +33,7 @@ public class VectorStoreService {
     
     public VectorStoreService() {
         this.embeddingStore = new InMemoryEmbeddingStore<>();
-        this.embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+        this.embeddingModel = createMockEmbeddingModel();
         LOG.info("VectorStoreService initialized with in-memory store");
     }
     
@@ -131,5 +132,46 @@ public class VectorStoreService {
      */
     public int getStoredEmbeddingsCount() {
         return storedEmbeddingsCount;
+    }
+    
+    /**
+     * Create a mock embedding model for development/testing.
+     * In production, you would use a real embedding model like AllMiniLmL6V2EmbeddingModel.
+     */
+    private EmbeddingModel createMockEmbeddingModel() {
+        return new EmbeddingModel() {
+            private final Random random = new Random(42); // Fixed seed for consistent results
+            
+            @Override
+            public Response<Embedding> embed(TextSegment textSegment) {
+                return embed(textSegment.text());
+            }
+            
+            @Override
+            public Response<Embedding> embed(String text) {
+                // Create a simple mock embedding vector (384 dimensions)
+                float[] vector = new float[384];
+                for (int i = 0; i < vector.length; i++) {
+                    vector[i] = (random.nextFloat() - 0.5f) * 2.0f; // Random values between -1 and 1
+                }
+                
+                // Add some text-based variation to make embeddings somewhat meaningful
+                int textHash = text.hashCode();
+                for (int i = 0; i < Math.min(10, vector.length); i++) {
+                    vector[i] += ((textHash >> i) & 1) * 0.1f;
+                }
+                
+                return Response.from(Embedding.from(vector));
+            }
+            
+            @Override
+            public Response<List<Embedding>> embedAll(List<TextSegment> textSegments) {
+                List<Embedding> embeddings = new ArrayList<>();
+                for (TextSegment segment : textSegments) {
+                    embeddings.add(embed(segment).content());
+                }
+                return Response.from(embeddings);
+            }
+        };
     }
 }

@@ -74,7 +74,7 @@ public class DocumentIngestionRoute extends RouteBuilder {
             .log("Direct ingestion completed: ${body}");
         
         // Route 3: HTTP endpoint for document upload
-        from("jetty:http://0.0.0.0:8080/api/ingest?httpMethodRestrict=POST")
+        from("undertow:http://0.0.0.0:8080/api/ingest?httpMethodRestrict=POST")
             .routeId("http-document-upload")
             .log("Document upload received via HTTP")
             

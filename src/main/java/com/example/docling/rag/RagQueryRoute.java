@@ -34,7 +34,7 @@ public class RagQueryRoute extends RouteBuilder {
         }
         
         // Route 1: HTTP endpoint for RAG queries
-        from("jetty:http://0.0.0.0:8080/api/query?httpMethodRestrict=POST")
+        from("undertow:http://0.0.0.0:8080/api/query?httpMethodRestrict=POST")
             .routeId("rag-query-endpoint")
             .log("Received RAG query via HTTP")
             
@@ -138,7 +138,7 @@ public class RagQueryRoute extends RouteBuilder {
             .log("Direct RAG query completed: ${body}");
         
         // Route 3: Health check endpoint
-        from("jetty:http://0.0.0.0:8080/api/health?httpMethodRestrict=GET")
+        from("undertow:http://0.0.0.0:8080/api/health?httpMethodRestrict=GET")
             .routeId("health-check")
             .process(exchange -> {
                 int embeddingsCount = vectorStoreService.getStoredEmbeddingsCount();

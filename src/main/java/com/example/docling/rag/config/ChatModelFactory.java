@@ -2,7 +2,7 @@ package com.example.docling.rag.config;
 
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.output.Response;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class ChatModelFactory {
      * Create a ChatLanguageModel based on environment configuration.
      * Falls back to a mock model if OpenAI API key is not configured.
      */
-    public static ChatLanguageModel createChatModel() {
+    public static ChatModel createChatModel() {
         String apiKey = System.getenv("OPENAI_API_KEY");
         
         if (apiKey != null && !apiKey.isEmpty()) {
@@ -43,13 +43,11 @@ public class ChatModelFactory {
     /**
      * Create a mock chat model for testing without API keys.
      */
-    private static ChatLanguageModel createMockChatModel() {
-        return new ChatLanguageModel() {
-            @Override
+    private static ChatModel createMockChatModel() {
+        LOG.warn("Using mock chat model - responses will be static");
+        return new ChatModel() {
             public Response<AiMessage> generate(List<ChatMessage> messages) {
-                String userMessage = messages.isEmpty() ? "" : 
-                    messages.get(messages.size() - 1).toString();
-                LOG.info("Mock chat model received message: {}", userMessage);
+                LOG.info("Mock chat model received {} messages", messages.size());
                 String responseText = "This is a mock response. The actual query was processed, but no OpenAI API key is configured. " +
                        "To get real AI responses, please set the OPENAI_API_KEY environment variable with your OpenAI API key. " +
                        "\n\nYour query and the retrieved context have been processed successfully by the RAG system.";

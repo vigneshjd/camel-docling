@@ -1,7 +1,7 @@
 package com.example.docling.rag;
 
 import com.example.docling.rag.config.ChatModelFactory;
-import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.chat.ChatModel;
 import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class DoclingRagApplication {
         Main main = new Main();
         
         // Create and bind chat model
-        ChatLanguageModel chatModel = ChatModelFactory.createChatModel();
+        ChatModel chatModel = ChatModelFactory.createChatModel();
         main.bind("chatModel", chatModel);
         LOG.info("Chat model configured and bound to registry");
         

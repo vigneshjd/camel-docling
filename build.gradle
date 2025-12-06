@@ -15,8 +15,8 @@ repositories {
 }
 
 ext {
-    camelVersion = '4.9.0'
-    langchain4jVersion = '0.35.0'
+    camelVersion = '4.16.0'
+    langchain4jVersion = '0.36.2'
     slf4jVersion = '2.0.9'
 }
 
@@ -26,20 +26,27 @@ dependencies {
     implementation "org.apache.camel:camel-main:${camelVersion}"
     
     // Camel Docling Component for document parsing
-    implementation "org.apache.camel:camel-docling:4.16.0"
+    implementation "org.apache.camel:camel-docling:${camelVersion}"
     
     // Camel LangChain4j for AI/LLM integration
     implementation "org.apache.camel:camel-langchain4j-chat:${camelVersion}"
     implementation "org.apache.camel:camel-langchain4j-embeddings:${camelVersion}"
-    
+    /*implementation platform("dev.langchain4j:langchain4j-bom:1.9.1")
+
+    implementation "dev.langchain4j:langchain4j-core"
+    implementation "dev.langchain4j:langchain4j"
+    implementation "dev.langchain4j:langchain4j-open-ai"
+    implementation "dev.langchain4j:langchain4j-embeddings"
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2"
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2-q"*/
     // LangChain4j dependencies
-    implementation "dev.langchain4j:langchain4j:${langchain4jVersion}"
-    implementation "dev.langchain4j:langchain4j-embeddings:${langchain4jVersion}"
-    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:${langchain4jVersion}"
-    implementation "dev.langchain4j:langchain4j-open-ai:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j:1.9.1"
+    implementation "dev.langchain4j:langchain4j-embeddings:1.9.1-beta17"
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.9.1-beta17"
+    implementation "dev.langchain4j:langchain4j-open-ai:1.9.1"
     
     // Vector Store - In-Memory for simplicity
-    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2-q:${langchain4jVersion}"
+    implementation "dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2-q:1.9.1-beta17"
     
     // JSON processing
     implementation "org.apache.camel:camel-jackson:${camelVersion}"
@@ -47,7 +54,7 @@ dependencies {
     
     // HTTP component for REST endpoints
     implementation "org.apache.camel:camel-http:${camelVersion}"
-    implementation "org.apache.camel:camel-jetty:${camelVersion}"
+    implementation "org.apache.camel:camel-undertow:${camelVersion}"
     
     // File component
     implementation "org.apache.camel:camel-file:${camelVersion}"
